@@ -116,6 +116,12 @@ namespace Calculator
 
         private void EqualsButton_Click(object sender, RoutedEventArgs e)
         {
+            if (string.IsNullOrEmpty(number))
+            {
+                ResultDisplay.Text = "There is nothing to compute.";
+                return;
+            }
+
             calculation.SecondNumber = Int32.Parse(number);
             number = string.Empty;
 
@@ -123,6 +129,10 @@ namespace Calculator
             if (calculation.Operation.Equals(ArithmeticOperation.Division) && result == -1)
             {
                 ResultDisplay.Text = "Can not divide by zero";
+            }
+            else if (result == -1)
+            {
+                ResultDisplay.Text = "No operator defined, try again.";
             }
             else
             {
@@ -151,6 +161,7 @@ namespace Calculator
             if (cleanMessageDisplay)
             {
                 MessageDisplay.Text = nr.ToString();
+                ResultDisplay.Text = "";
                 cleanMessageDisplay = false;
             }
             else
@@ -163,7 +174,7 @@ namespace Calculator
         {
             if (calculation.IsEvaluable)
             {
-                ResultDisplay.Text = "No! Only one arithmetic operation is allowed.";
+                ResultDisplay.Text = "Only one arithmetic operation per calculation is allowed.";
             }
             else if (!string.IsNullOrEmpty(number))
             {
@@ -174,12 +185,13 @@ namespace Calculator
             }
             else
             {
-                MessageDisplay.Text = "Please enter a number";
+                MessageDisplay.Text = "Please enter a number.";
             }
         }
 
         private void PrintOperation()
         {
+            //TODO: Only print operator if no operator is not allready printed.
             if (!calculation.Operation.Equals(ArithmeticOperation.NoOperation))
             {
                 MessageDisplay.Text += calculation.PrintOperator();
