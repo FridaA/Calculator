@@ -10,26 +10,26 @@ namespace Calculator
     {
         public double FirstNumber { get; set; }
         public double SecondNumber { get; set; }
-        public ArithmeticOperation Operation { get; set; }
+        public ArithmeticOperator Operator { get; set; }
         public bool IsEvaluable
         {
             get
             {
-                return !Operation.Equals(ArithmeticOperation.NoOperation);
+                return !Operator.Equals(ArithmeticOperator.NoOperator);
             }
         }
 
         public double GetResult()
         {
-            switch (Operation)
+            switch (Operator)
             {
-                case ArithmeticOperation.Addition:
+                case ArithmeticOperator.Addition:
                     return ArithmeticOperators.Addition(FirstNumber, SecondNumber);
-                case ArithmeticOperation.Subtraction:
+                case ArithmeticOperator.Subtraction:
                     return ArithmeticOperators.Subtraction(FirstNumber, SecondNumber);
-                case ArithmeticOperation.Multiplication:
+                case ArithmeticOperator.Multiplication:
                     return ArithmeticOperators.Multiplication(FirstNumber, SecondNumber);
-                case ArithmeticOperation.Division:
+                case ArithmeticOperator.Division:
                     return ArithmeticOperators.Division(FirstNumber, SecondNumber);
             }
             return -1;
@@ -37,31 +37,31 @@ namespace Calculator
 
         public string PrintOperator()
         {
-            switch (Operation)
+            switch (Operator)
             {
-                case ArithmeticOperation.Addition:
+                case ArithmeticOperator.Addition:
                     return " + ";
-                case ArithmeticOperation.Subtraction:
+                case ArithmeticOperator.Subtraction:
                     return " - ";
-                case ArithmeticOperation.Multiplication:
+                case ArithmeticOperator.Multiplication:
                     return " * ";
-                case ArithmeticOperation.Division:
+                case ArithmeticOperator.Division:
                     return " / ";
             }
-            return "No operation available";
+            return "No operator available";
         }
 
         public void Clean()
         {
             FirstNumber = 0;
             SecondNumber = 0;
-            Operation = ArithmeticOperation.NoOperation;
+            Operator = ArithmeticOperator.NoOperator;
         }
     }
 
-    public enum ArithmeticOperation
+    public enum ArithmeticOperator
     {
-        NoOperation,
+        NoOperator,
         Addition,
         Subtraction,
         Multiplication,

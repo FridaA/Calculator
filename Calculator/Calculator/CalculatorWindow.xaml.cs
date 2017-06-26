@@ -17,12 +17,16 @@ namespace Calculator
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
+    /// Calculator with numbers 0-9 and arithmetic operations +, -, *, /. Only one 
+    /// arithmetic operator can be used in one calculation. Use the buttons in the application to
+    /// perform the actions.
     /// </summary>
     public partial class MainWindow : Window
     {
         private string number;
         private Calculation calculation = new Calculation();
         private bool cleanMessageDisplay = true;
+        private bool printOperator = true;
 
         public MainWindow()
         {
@@ -92,30 +96,36 @@ namespace Calculator
 
         private void AdditionButton_Click(object sender, RoutedEventArgs e)
         {
-            AddOperation(ArithmeticOperation.Addition);
-            PrintOperation();
+            AddOperator(ArithmeticOperator.Addition);
+            PrintOperator();
         }
 
         private void SubtractionButton_Click(object sender, RoutedEventArgs e)
         {
-            AddOperation(ArithmeticOperation.Subtraction);
-            PrintOperation();
+            AddOperator(ArithmeticOperator.Subtraction);
+            PrintOperator();
         }
 
         private void MultiplicationButton_Click(object sender, RoutedEventArgs e)
         {
-            AddOperation(ArithmeticOperation.Multiplication);
-            PrintOperation();
+            AddOperator(ArithmeticOperator.Multiplication);
+            PrintOperator();
         }
 
         private void DivisionButton_Click(object sender, RoutedEventArgs e)
         {
-            AddOperation(ArithmeticOperation.Division);
-            PrintOperation();
+            AddOperator(ArithmeticOperator.Division);
+            PrintOperator();
         }
 
         private void EqualsButton_Click(object sender, RoutedEventArgs e)
         {
+            if (!calculation.IsEvaluable)
+            {
+                ResultDisplay.Text = "No operator defined, try again!";
+                return;
+            }
+
             if (string.IsNullOrEmpty(number))
             {
                 ResultDisplay.Text = "There is nothing to compute.";
@@ -126,13 +136,9 @@ namespace Calculator
             number = string.Empty;
 
             double result = calculation.GetResult();
-            if (calculation.Operation.Equals(ArithmeticOperation.Division) && result == -1)
+            if (calculation.Operator.Equals(ArithmeticOperator.Division) && result == -1)
             {
                 ResultDisplay.Text = "Can not divide by zero";
-            }
-            else if (result == -1)
-            {
-                ResultDisplay.Text = "No operator defined, try again.";
             }
             else
             {
@@ -142,7 +148,6 @@ namespace Calculator
             calculation.Clean();
             cleanMessageDisplay = true;
         }
-
 
         private void AddToNumber(string nr)
         {
@@ -170,18 +175,20 @@ namespace Calculator
             }
         }
 
-        private void AddOperation(ArithmeticOperation op)
+        private void AddOperator(ArithmeticOperator op)
         {
             if (calculation.IsEvaluable)
             {
                 ResultDisplay.Text = "Only one arithmetic operation per calculation is allowed.";
+                printOperator = false;
             }
             else if (!string.IsNullOrEmpty(number))
             {
                 calculation.FirstNumber = double.Parse(number);
                 number = string.Empty;
 
-                calculation.Operation = op;
+                calculation.Operator = op;
+                printOperator = true;
             }
             else
             {
@@ -189,10 +196,14 @@ namespace Calculator
             }
         }
 
-        private void PrintOperation()
+        private void PrintOperator()
         {
-            //TODO: Only print operator if no operator is not allready printed.
-            if (!calculation.Operation.Equals(ArithmeticOperation.NoOperation))
+            if (calculation.Operator.Equals(ArithmeticOperator.NoOperator))
+            {
+                return;
+            }
+            
+            if (printOperator)
             {
                 MessageDisplay.Text += calculation.PrintOperator();
             }
